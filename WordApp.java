@@ -33,6 +33,10 @@ public class WordApp {
         static JLabel caught;
         static JLabel scr;
         public static String text="";
+        static int count=0;
+        public static int x_inc;
+        
+
 	
 	
 	public static void setupGUI(int frameX,int frameY,int yLimit) {
@@ -79,6 +83,7 @@ public class WordApp {
 	   g.add(txt);
 	    
 	    JPanel b = new JPanel();
+            
         b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS)); 
 	   	JButton startB = new JButton("Start");;
 		
@@ -89,9 +94,23 @@ public class WordApp {
 		      {
 		    	  //[snip]
                           
+                          if (count==0){
+                            w.start();
+                            missed.setText("Missed:" + score.getMissed()+ "    ");
+                            count++;
+                          }
+                          else{
+                          for (int i=0;i<noWords;i++) {
+                                    words[i]=new WordRecord(dict.getNewWord(),i*x_inc,yLimit);
+                                    //words[i].resetWord();
+                                }
+                          score.resetScore();
+                          caught.setText("Caught: " + score.getCaught() + "    ");
+                          scr.setText("Score:" + score.getScore()+ "    ");
                           w.start();
                           missed.setText("Missed:" + score.getMissed()+ "    ");
                           //System.out.println(score.getMissed());
+                          }
 		    	  textEntry.requestFocus();  //return focus to the text entry field
 		      }
 		    });
@@ -104,11 +123,16 @@ public class WordApp {
 			      {
 			    	  //[snip]
                                
-                                w.stop();
+                                //w.stop();
                                 score.resetScore();
-                                
                                 caught.setText("Caught: " + score.getCaught() + "    ");
                                 scr.setText("Score:" + score.getScore()+ "    ");
+                                
+                                for (int i=0;i<noWords;i++) {
+                                    words[i]=new WordRecord("");
+                                    
+                                }
+                                
                                 w.repaint();
 			      }
 			    });
@@ -161,6 +185,7 @@ public static String[] getDictFromFile(String filename) {
 	public static void main(String[] args) {
                 Scanner input = new Scanner(System.in);
 		//deal with command line arguments
+                
 		totalWords=Integer.parseInt(input.next());  //total words to fall
 		noWords=Integer.parseInt(input.next()); // total words falling at any point
 		assert(totalWords>=noWords); // this could be done more neatly
@@ -177,7 +202,7 @@ public static String[] getDictFromFile(String filename) {
 		setupGUI(frameX, frameY, yLimit);  
     	//Start WordPanel thread - for redrawing animation
 
-		int x_inc=(int)frameX/noWords;
+		 x_inc=(int)frameX/noWords;
 	  	//initialize shared array of current words
 
 		for (int i=0;i<noWords;i++) {

@@ -16,6 +16,7 @@ public class Game implements Runnable{
     WordRecord wr;
     WordApp wa;
     
+    
     public Game (WordPanel w, int a){
         this.wp = w;
         this.x = a;
@@ -34,11 +35,14 @@ public class Game implements Runnable{
         }
     }
     
-    public void stop(){
+    public void stop() throws InterruptedException{
         if (th!=null){
             th=null;
         }
+        
+       
     }
+    
     
     public void run(){
         while(true){
@@ -46,10 +50,16 @@ public class Game implements Runnable{
                 wp.words[x].drop(wp.words[x].getSpeed());
                 /*change();*/
                 //wp.repaint();
-                 if (wp.maxY-wp.words[x].getY()<=10){
-                    wp.words[x].setWord("");
-                    wa.score.missedWord();     
+                synchronized(wa.score){
+                wa.caught.setText("Caught: " + wa.score.getCaught() + "    ");
+                wa.scr.setText("Score:" + wa.score.getScore()+ "    ");
                 }
+                
+                 if (wp.maxY-wp.words[x].getY()<=10){
+                    wp.words[x].setWord("   ");
+                   synchronized(wa.score){wa.score.missedWord();}
+                }
+                
                
                 wp.repaint();
                 
@@ -61,12 +71,11 @@ public class Game implements Runnable{
             }
             if (wp.words[x].matchWord(wa.text)){
                 
-                wa.score.caughtWord(wp.words[x].getWord().length());
-                wa.caught.setText("Caught: " + wa.score.getCaught() + "    ");
-                wa.scr.setText("Score:" + wa.score.getScore()+ "    ");
+                synchronized(wa.score){wa.score.caughtWord(wp.words[x].getWord().length());}
+                
                 }
                 
-            wa.missed.setText("Missed:" + wa.score.getMissed()+ "    ");
+            synchronized(wa.score){wa.missed.setText("Missed:" + wa.score.getMissed()+ "    ");}
             
         }
     }

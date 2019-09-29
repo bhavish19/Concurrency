@@ -56,15 +56,17 @@ public class WordPanel extends JPanel implements Runnable {
                     t=null;
                 }
                 
+                
 		public void run() {
 			//add in code to animate this
+                    synchronized(wa.score){
                     Game[] game = new Game[noWords];
                     for(int i =0; i<noWords;i++){
                         game[i] = new Game(this,i);
                         game[i].start();
                     }
                     repaint();
-                    
+                    }
 		}
 
 	}
