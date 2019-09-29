@@ -1,9 +1,9 @@
 package skeletonCodeAssgnmt2;
 
 public class Score {
-	public  volatile static int missedWords;
-	private volatile static int caughtWords;
-	private volatile static int gameScore;
+	private  int missedWords;
+	private  int caughtWords;
+	private  int gameScore;
 	
 	Score() {
 		missedWords=0;
